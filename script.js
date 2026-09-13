@@ -46,6 +46,7 @@ const buttons = document.querySelectorAll('.focus-button');
 const focusTitle = document.getElementById('focus-title');
 const focusDescription = document.getElementById('focus-description');
 const focusList = document.getElementById('focus-list');
+const focusPanel = document.getElementById('focus-panel');
 const checkboxes = document.querySelectorAll('input[type="checkbox"][data-check]');
 const checklistCount = document.getElementById('checklist-count');
 const checklistTotal = document.getElementById('checklist-total');
@@ -68,7 +69,14 @@ function renderFocus(focus) {
   });
 
   buttons.forEach((button) => {
-    button.classList.toggle('is-active', button.dataset.focus === focus);
+    const isActive = button.dataset.focus === focus;
+    button.classList.toggle('is-active', isActive);
+    button.setAttribute('aria-selected', String(isActive));
+    button.tabIndex = isActive ? 0 : -1;
+
+    if (isActive) {
+      focusPanel.setAttribute('aria-labelledby', button.id);
+    }
   });
 }
 
@@ -93,6 +101,21 @@ function updateChecklistSummary() {
 buttons.forEach((button) => {
   button.addEventListener('click', () => {
     renderFocus(button.dataset.focus);
+  });
+
+  button.addEventListener('keydown', (event) => {
+    const currentIndex = Array.from(buttons).indexOf(button);
+
+    if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') {
+      return;
+    }
+
+    const offset = event.key === 'ArrowRight' ? 1 : -1;
+    const nextIndex = (currentIndex + offset + buttons.length) % buttons.length;
+    const nextButton = buttons[nextIndex];
+
+    renderFocus(nextButton.dataset.focus);
+    nextButton.focus();
   });
 });
 

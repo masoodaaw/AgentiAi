@@ -28,14 +28,65 @@
           publicly to demonstrate your abilities.
         </p>
 
-        <div class="focus-switcher" aria-label="Agentic AI focus areas">
-          <button class="focus-button is-active" data-focus="learn">Learn</button>
-          <button class="focus-button" data-focus="build">Build</button>
-          <button class="focus-button" data-focus="deploy">Deploy</button>
-          <button class="focus-button" data-focus="showcase">Showcase</button>
+        <div
+          class="focus-switcher"
+          role="tablist"
+          aria-label="Agentic AI focus areas"
+        >
+          <button
+            id="tab-learn"
+            class="focus-button is-active"
+            data-focus="learn"
+            role="tab"
+            aria-selected="true"
+            aria-controls="focus-panel"
+            tabindex="0"
+          >
+            Learn
+          </button>
+          <button
+            id="tab-build"
+            class="focus-button"
+            data-focus="build"
+            role="tab"
+            aria-selected="false"
+            aria-controls="focus-panel"
+            tabindex="-1"
+          >
+            Build
+          </button>
+          <button
+            id="tab-deploy"
+            class="focus-button"
+            data-focus="deploy"
+            role="tab"
+            aria-selected="false"
+            aria-controls="focus-panel"
+            tabindex="-1"
+          >
+            Deploy
+          </button>
+          <button
+            id="tab-showcase"
+            class="focus-button"
+            data-focus="showcase"
+            role="tab"
+            aria-selected="false"
+            aria-controls="focus-panel"
+            tabindex="-1"
+          >
+            Showcase
+          </button>
         </div>
 
-        <article class="focus-panel" aria-live="polite">
+        <article
+          id="focus-panel"
+          class="focus-panel"
+          role="tabpanel"
+          aria-live="polite"
+          aria-atomic="true"
+          aria-labelledby="tab-learn"
+        >
           <h2 id="focus-title">Learn the foundations first</h2>
           <p id="focus-description">
             Start with agents, tools, prompts, memory, planning, and evaluation so

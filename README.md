@@ -25,7 +25,7 @@ Then open `http://localhost:4173`.
 
 ## Validation
 
-Run the lightweight JavaScript syntax check with:
+Run the lightweight interaction tests with:
 
 ```bash
 npm test
