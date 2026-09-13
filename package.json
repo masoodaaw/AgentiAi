@@ -1,0 +1,22 @@
+{
+  "name": "agentiai",
+  "version": "1.0.0",
+  "description": "A lightweight public portfolio site for learning and showcasing Agentic AI.",
+  "main": "script.js",
+  "homepage": "https://masoodaaw.github.io/AgentiAi/",
+  "scripts": {
+    "start": "python3 -m http.server 4173",
+    "test": "node --check script.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/masoodaaw/AgentiAi.git"
+  },
+  "keywords": [
+    "agentic-ai",
+    "portfolio",
+    "static-site"
+  ],
+  "author": "",
+  "license": "ISC"
+}
