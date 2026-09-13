@@ -199,6 +199,8 @@ test('supports forward and backward arrow-key tab navigation with wraparound', (
   const harness = createHarness();
   const forwardEvent = { key: 'ArrowRight', preventDefaultCalled: false, preventDefault() { this.preventDefaultCalled = true; } };
   const backwardEvent = { key: 'ArrowLeft', preventDefaultCalled: false, preventDefault() { this.preventDefaultCalled = true; } };
+  const downEvent = { key: 'ArrowDown', preventDefaultCalled: false, preventDefault() { this.preventDefaultCalled = true; } };
+  const upEvent = { key: 'ArrowUp', preventDefaultCalled: false, preventDefault() { this.preventDefaultCalled = true; } };
 
   harness.buttons[0].dispatch('keydown', forwardEvent);
   assert.equal(harness.elements['focus-panel'].getAttribute('aria-labelledby'), 'tab-build');
@@ -207,6 +209,14 @@ test('supports forward and backward arrow-key tab navigation with wraparound', (
   harness.buttons[0].dispatch('keydown', backwardEvent);
   assert.equal(harness.elements['focus-panel'].getAttribute('aria-labelledby'), 'tab-showcase');
   assert.equal(backwardEvent.preventDefaultCalled, true);
+
+  harness.buttons[1].dispatch('keydown', downEvent);
+  assert.equal(harness.elements['focus-panel'].getAttribute('aria-labelledby'), 'tab-deploy');
+  assert.equal(downEvent.preventDefaultCalled, true);
+
+  harness.buttons[1].dispatch('keydown', upEvent);
+  assert.equal(harness.elements['focus-panel'].getAttribute('aria-labelledby'), 'tab-learn');
+  assert.equal(upEvent.preventDefaultCalled, true);
 });
 
 test('persists checklist updates in localStorage and updates the summary', () => {
