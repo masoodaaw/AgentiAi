@@ -69,6 +69,10 @@ function createServer() {
 function startServer() {
   const server = createServer();
 
+  server.on('error', (error) => {
+    console.error(`AgentiAi failed to start on port ${port}: ${error.message}`);
+  });
+
   server.listen(port, () => {
     console.log(`AgentiAi is available at http://localhost:${port}`);
   });
