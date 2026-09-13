@@ -35,6 +35,8 @@ npm test
 
 The repository includes a GitHub Pages workflow in `.github/workflows/deploy-pages.yml`.
 
-After enabling GitHub Pages for the repository, merges to `main` can publish the site automatically at:
+To publish the site, configure the repository Pages source to use **GitHub Actions**.
+
+After that, merges to `main` can publish the site automatically at:
 
 `https://masoodaaw.github.io/AgentiAi/`

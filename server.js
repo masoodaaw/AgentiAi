@@ -43,8 +43,9 @@ const server = http.createServer((request, response) => {
 
   fs.readFile(filePath, (error, file) => {
     if (error) {
-      response.writeHead(error.code === 'ENOENT' ? 404 : 500);
-      response.end(error.code === 'ENOENT' ? 'Not found' : 'Server error');
+      const isMissingPath = error.code === 'ENOENT' || error.code === 'EISDIR';
+      response.writeHead(isMissingPath ? 404 : 500);
+      response.end(isMissingPath ? 'Not found' : 'Server error');
       return;
     }
 

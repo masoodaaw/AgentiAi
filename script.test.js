@@ -191,6 +191,20 @@ test('supports Home and End keyboard navigation for the focus tabs', () => {
   assert.equal(endEvent.preventDefaultCalled, true);
 });
 
+test('supports forward and backward arrow-key tab navigation with wraparound', () => {
+  const harness = createHarness();
+  const forwardEvent = { key: 'ArrowRight', preventDefaultCalled: false, preventDefault() { this.preventDefaultCalled = true; } };
+  const backwardEvent = { key: 'ArrowLeft', preventDefaultCalled: false, preventDefault() { this.preventDefaultCalled = true; } };
+
+  harness.buttons[0].dispatch('keydown', forwardEvent);
+  assert.equal(harness.elements['focus-panel'].getAttribute('aria-labelledby'), 'tab-build');
+  assert.equal(forwardEvent.preventDefaultCalled, true);
+
+  harness.buttons[0].dispatch('keydown', backwardEvent);
+  assert.equal(harness.elements['focus-panel'].getAttribute('aria-labelledby'), 'tab-showcase');
+  assert.equal(backwardEvent.preventDefaultCalled, true);
+});
+
 test('persists checklist updates in localStorage and updates the summary', () => {
   const harness = createHarness({ 'agentiai-checklist': JSON.stringify({ story: true }) });
 
