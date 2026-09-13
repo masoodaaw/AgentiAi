@@ -192,3 +192,10 @@ test('persists checklist updates in localStorage and updates the summary', () =>
     JSON.stringify({ story: true, demo: true }),
   );
 });
+
+test('ignores valid JSON checklist values that are not objects', () => {
+  const harness = createHarness({ 'agentiai-checklist': JSON.stringify(true) });
+
+  assert.equal(harness.checkboxes[0].checked, false);
+  assert.equal(harness.elements['checklist-count'].textContent, '0');
+});

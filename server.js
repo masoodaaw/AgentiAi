@@ -13,13 +13,24 @@ const contentTypes = {
 };
 
 function resolveRequestPath(urlPath) {
-  const requestPath = urlPath === '/' ? '/index.html' : decodeURIComponent(urlPath);
-  const normalizedPath = path.normalize(requestPath).replace(/^(\.\.[/\\])+/, '');
+  const parsedUrl = new URL(urlPath || '/', `http://localhost:${port}`);
+  const pathname = parsedUrl.pathname === '/' ? '/index.html' : parsedUrl.pathname;
+  const normalizedPath = path
+    .normalize(decodeURIComponent(pathname))
+    .replace(/^(\.\.[/\\])+/, '');
   return path.join(rootDirectory, normalizedPath);
 }
 
 const server = http.createServer((request, response) => {
-  const filePath = resolveRequestPath(request.url || '/');
+  let filePath;
+
+  try {
+    filePath = resolveRequestPath(request.url || '/');
+  } catch (error) {
+    response.writeHead(400);
+    response.end('Bad request');
+    return;
+  }
 
   if (!filePath.startsWith(rootDirectory)) {
     response.writeHead(403);

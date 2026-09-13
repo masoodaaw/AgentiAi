@@ -82,7 +82,10 @@ function renderFocus(focus) {
 
 function loadChecklist() {
   try {
-    return JSON.parse(window.localStorage.getItem(storageKey) || '{}');
+    const parsedState = JSON.parse(window.localStorage.getItem(storageKey) || '{}');
+    return parsedState && typeof parsedState === 'object' && !Array.isArray(parsedState)
+      ? parsedState
+      : {};
   } catch (error) {
     return {};
   }
@@ -109,6 +112,8 @@ buttons.forEach((button) => {
     if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') {
       return;
     }
+
+    event.preventDefault();
 
     const offset = event.key === 'ArrowRight' ? 1 : -1;
     const nextIndex = (currentIndex + offset + buttons.length) % buttons.length;
