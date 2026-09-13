@@ -99,6 +99,17 @@ function createHarness(localStorageState = {}, options = {}) {
 
   const storage = { ...localStorageState };
 
+  const jsonApi = {
+    parse: JSON.parse,
+    stringify(value) {
+      if (options.throwOnStringify) {
+        throw new Error('Serialization unavailable');
+      }
+
+      return JSON.stringify(value);
+    },
+  };
+
   const context = {
     document: {
       querySelectorAll(selector) {
@@ -136,7 +147,8 @@ function createHarness(localStorageState = {}, options = {}) {
     console,
     Array,
     Boolean,
-    JSON,
+    JSON: jsonApi,
+    Object,
     String,
   };
 
@@ -258,6 +270,18 @@ test('falls back to an empty checklist when stored JSON is malformed', () => {
 
 test('keeps checklist interaction working when localStorage persistence fails', () => {
   const harness = createHarness({}, { throwOnSetItem: true });
+
+  harness.checkboxes[0].checked = true;
+
+  assert.doesNotThrow(() => {
+    harness.checkboxes[0].dispatch('change');
+  });
+
+  assert.equal(harness.elements['checklist-count'].textContent, '1');
+});
+
+test('keeps checklist interaction working when checklist serialization fails', () => {
+  const harness = createHarness({}, { throwOnStringify: true });
 
   harness.checkboxes[0].checked = true;
 

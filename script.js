@@ -84,7 +84,12 @@ function renderFocus(focus) {
 function loadChecklist() {
   try {
     const parsedState = JSON.parse(window.localStorage.getItem(storageKey) || '{}');
-    return parsedState && typeof parsedState === 'object' && !Array.isArray(parsedState)
+    return (
+      parsedState &&
+      typeof parsedState === 'object' &&
+      !Array.isArray(parsedState) &&
+      Object.getPrototypeOf(parsedState) === Object.prototype
+    )
       ? parsedState
       : {};
   } catch (error) {

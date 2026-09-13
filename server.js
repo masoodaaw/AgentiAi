@@ -52,14 +52,20 @@ function createServer() {
       }
 
       const extension = path.extname(filePath);
-      response.writeHead(200, {
-        'Content-Type': contentTypes[extension] || 'application/octet-stream',
-      });
-
       const stream = fs.createReadStream(filePath);
+      stream.once('open', () => {
+        response.writeHead(200, {
+          'Content-Type': contentTypes[extension] || 'application/octet-stream',
+        });
+      });
       stream.on('error', () => {
-        response.writeHead(500);
-        response.end('Server error');
+        if (!response.headersSent) {
+          response.writeHead(500);
+          response.end('Server error');
+          return;
+        }
+
+        response.destroy();
       });
       stream.pipe(response);
     });
