@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const port = Number(process.env.PORT || 4173);
-const rootDirectory = __dirname;
+const rootDirectory = path.resolve(__dirname);
 
 const contentTypes = {
   '.css': 'text/css; charset=utf-8',
@@ -15,10 +15,8 @@ const contentTypes = {
 function resolveRequestPath(urlPath) {
   const parsedUrl = new URL(urlPath || '/', `http://localhost:${port}`);
   const pathname = parsedUrl.pathname === '/' ? '/index.html' : parsedUrl.pathname;
-  const normalizedPath = path
-    .normalize(decodeURIComponent(pathname))
-    .replace(/^(\.\.[/\\])+/, '');
-  return path.join(rootDirectory, normalizedPath);
+  const decodedPath = decodeURIComponent(pathname);
+  return path.resolve(rootDirectory, `.${decodedPath}`);
 }
 
 const server = http.createServer((request, response) => {
@@ -32,7 +30,7 @@ const server = http.createServer((request, response) => {
     return;
   }
 
-  if (!filePath.startsWith(rootDirectory)) {
+  if (filePath !== rootDirectory && !filePath.startsWith(`${rootDirectory}${path.sep}`)) {
     response.writeHead(403);
     response.end('Forbidden');
     return;

@@ -177,6 +177,20 @@ test('updates the focus panel and tab state when another focus is selected', () 
   );
 });
 
+test('supports Home and End keyboard navigation for the focus tabs', () => {
+  const harness = createHarness();
+  const homeEvent = { key: 'Home', preventDefaultCalled: false, preventDefault() { this.preventDefaultCalled = true; } };
+  const endEvent = { key: 'End', preventDefaultCalled: false, preventDefault() { this.preventDefaultCalled = true; } };
+
+  harness.buttons[2].dispatch('keydown', homeEvent);
+  assert.equal(harness.elements['focus-panel'].getAttribute('aria-labelledby'), 'tab-learn');
+  assert.equal(homeEvent.preventDefaultCalled, true);
+
+  harness.buttons[0].dispatch('keydown', endEvent);
+  assert.equal(harness.elements['focus-panel'].getAttribute('aria-labelledby'), 'tab-showcase');
+  assert.equal(endEvent.preventDefaultCalled, true);
+});
+
 test('persists checklist updates in localStorage and updates the summary', () => {
   const harness = createHarness({ 'agentiai-checklist': JSON.stringify({ story: true }) });
 
@@ -195,6 +209,13 @@ test('persists checklist updates in localStorage and updates the summary', () =>
 
 test('ignores valid JSON checklist values that are not objects', () => {
   const harness = createHarness({ 'agentiai-checklist': JSON.stringify(true) });
+
+  assert.equal(harness.checkboxes[0].checked, false);
+  assert.equal(harness.elements['checklist-count'].textContent, '0');
+});
+
+test('falls back to an empty checklist when stored JSON is malformed', () => {
+  const harness = createHarness({ 'agentiai-checklist': '{bad json' });
 
   assert.equal(harness.checkboxes[0].checked, false);
   assert.equal(harness.elements['checklist-count'].textContent, '0');

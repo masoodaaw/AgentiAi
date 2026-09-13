@@ -109,14 +109,28 @@ buttons.forEach((button) => {
   button.addEventListener('keydown', (event) => {
     const currentIndex = Array.from(buttons).indexOf(button);
 
-    if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') {
+    if (
+      event.key !== 'ArrowRight' &&
+      event.key !== 'ArrowLeft' &&
+      event.key !== 'Home' &&
+      event.key !== 'End'
+    ) {
       return;
     }
 
     event.preventDefault();
 
-    const offset = event.key === 'ArrowRight' ? 1 : -1;
-    const nextIndex = (currentIndex + offset + buttons.length) % buttons.length;
+    let nextIndex;
+
+    if (event.key === 'Home') {
+      nextIndex = 0;
+    } else if (event.key === 'End') {
+      nextIndex = buttons.length - 1;
+    } else {
+      const offset = event.key === 'ArrowRight' ? 1 : -1;
+      nextIndex = (currentIndex + offset + buttons.length) % buttons.length;
+    }
+
     const nextButton = buttons[nextIndex];
 
     renderFocus(nextButton.dataset.focus);
