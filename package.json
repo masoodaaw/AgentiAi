@@ -2,7 +2,7 @@
   "name": "agentiai",
   "version": "1.0.0",
   "description": "A lightweight public portfolio site for learning and showcasing Agentic AI.",
-  "main": "script.js",
+  "main": "server.js",
   "homepage": "https://masoodaaw.github.io/AgentiAi/",
   "scripts": {
     "start": "node server.js",
