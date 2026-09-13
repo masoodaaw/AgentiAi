@@ -71,7 +71,7 @@ class FakeElement {
   }
 }
 
-function createHarness(localStorageState = {}) {
+function createHarness(localStorageState = {}, options = {}) {
   const buttons = ['learn', 'build', 'deploy', 'showcase'].map((focus, index) => {
     const button = new FakeElement(`tab-${focus}`);
     button.dataset.focus = focus;
@@ -125,6 +125,10 @@ function createHarness(localStorageState = {}) {
           return storage[key] ?? null;
         },
         setItem(key, value) {
+          if (options.throwOnSetItem) {
+            throw new Error('Storage unavailable');
+          }
+
           storage[key] = value;
         },
       },
@@ -240,4 +244,16 @@ test('falls back to an empty checklist when stored JSON is malformed', () => {
 
   assert.equal(harness.checkboxes[0].checked, false);
   assert.equal(harness.elements['checklist-count'].textContent, '0');
+});
+
+test('keeps checklist interaction working when localStorage persistence fails', () => {
+  const harness = createHarness({}, { throwOnSetItem: true });
+
+  harness.checkboxes[0].checked = true;
+
+  assert.doesNotThrow(() => {
+    harness.checkboxes[0].dispatch('change');
+  });
+
+  assert.equal(harness.elements['checklist-count'].textContent, '1');
 });

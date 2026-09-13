@@ -92,7 +92,11 @@ function loadChecklist() {
 }
 
 function saveChecklist(state) {
-  window.localStorage.setItem(storageKey, JSON.stringify(state));
+  try {
+    window.localStorage.setItem(storageKey, JSON.stringify(state));
+  } catch (error) {
+    return;
+  }
 }
 
 function updateChecklistSummary() {

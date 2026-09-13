@@ -24,39 +24,64 @@ function resolveRequestPath(urlPath) {
   return path.resolve(rootDirectory, `.${decodedPath}`);
 }
 
-const server = http.createServer((request, response) => {
-  let filePath;
+function createServer() {
+  return http.createServer((request, response) => {
+    let filePath;
 
-  try {
-    filePath = resolveRequestPath(request.url || '/');
-  } catch (error) {
-    response.writeHead(400);
-    response.end('Bad request');
-    return;
-  }
-
-  if (filePath !== rootDirectory && !filePath.startsWith(`${rootDirectory}${path.sep}`)) {
-    response.writeHead(403);
-    response.end('Forbidden');
-    return;
-  }
-
-  fs.readFile(filePath, (error, file) => {
-    if (error) {
-      const isMissingPath = error.code === 'ENOENT' || error.code === 'EISDIR';
-      response.writeHead(isMissingPath ? 404 : 500);
-      response.end(isMissingPath ? 'Not found' : 'Server error');
+    try {
+      filePath = resolveRequestPath(request.url || '/');
+    } catch (error) {
+      response.writeHead(400);
+      response.end('Bad request');
       return;
     }
 
-    const extension = path.extname(filePath);
-    response.writeHead(200, {
-      'Content-Type': contentTypes[extension] || 'application/octet-stream',
-    });
-    response.end(file);
-  });
-});
+    if (filePath !== rootDirectory && !filePath.startsWith(`${rootDirectory}${path.sep}`)) {
+      response.writeHead(403);
+      response.end('Forbidden');
+      return;
+    }
 
-server.listen(port, () => {
-  console.log(`AgentiAi is available at http://localhost:${port}`);
-});
+    fs.stat(filePath, (statError, stats) => {
+      if (statError || !stats.isFile()) {
+        const isMissingPath =
+          statError?.code === 'ENOENT' || statError?.code === 'EISDIR' || !stats?.isFile();
+        response.writeHead(isMissingPath ? 404 : 500);
+        response.end(isMissingPath ? 'Not found' : 'Server error');
+        return;
+      }
+
+      const extension = path.extname(filePath);
+      response.writeHead(200, {
+        'Content-Type': contentTypes[extension] || 'application/octet-stream',
+      });
+
+      const stream = fs.createReadStream(filePath);
+      stream.on('error', () => {
+        response.writeHead(500);
+        response.end('Server error');
+      });
+      stream.pipe(response);
+    });
+  });
+}
+
+function startServer() {
+  const server = createServer();
+
+  server.listen(port, () => {
+    console.log(`AgentiAi is available at http://localhost:${port}`);
+  });
+
+  return server;
+}
+
+if (require.main === module) {
+  startServer();
+}
+
+module.exports = {
+  createServer,
+  resolveRequestPath,
+  startServer,
+};

@@ -111,6 +111,11 @@ h1 {
   border-color: transparent;
 }
 
+.focus-button:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
 .focus-panel,
 .card {
   background: var(--panel);
