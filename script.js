@@ -112,6 +112,8 @@ buttons.forEach((button) => {
     if (
       event.key !== 'ArrowRight' &&
       event.key !== 'ArrowLeft' &&
+      event.key !== 'ArrowDown' &&
+      event.key !== 'ArrowUp' &&
       event.key !== 'Home' &&
       event.key !== 'End'
     ) {
@@ -127,7 +129,8 @@ buttons.forEach((button) => {
     } else if (event.key === 'End') {
       nextIndex = buttons.length - 1;
     } else {
-      const offset = event.key === 'ArrowRight' ? 1 : -1;
+      const offset =
+        event.key === 'ArrowRight' || event.key === 'ArrowDown' ? 1 : -1;
       nextIndex = (currentIndex + offset + buttons.length) % buttons.length;
     }
 

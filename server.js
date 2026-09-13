@@ -15,6 +15,11 @@ const contentTypes = {
 function resolveRequestPath(urlPath) {
   const parsedUrl = new URL(urlPath || '/', `http://localhost:${port}`);
   const pathname = parsedUrl.pathname === '/' ? '/index.html' : parsedUrl.pathname;
+
+  if (/%2f|%5c/i.test(pathname)) {
+    throw new Error('Encoded path separators are not allowed');
+  }
+
   const decodedPath = decodeURIComponent(pathname);
   return path.resolve(rootDirectory, `.${decodedPath}`);
 }

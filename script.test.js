@@ -214,6 +214,13 @@ test('ignores valid JSON checklist values that are not objects', () => {
   assert.equal(harness.elements['checklist-count'].textContent, '0');
 });
 
+test('falls back to an empty checklist when stored JSON is null', () => {
+  const harness = createHarness({ 'agentiai-checklist': 'null' });
+
+  assert.equal(harness.checkboxes[0].checked, false);
+  assert.equal(harness.elements['checklist-count'].textContent, '0');
+});
+
 test('falls back to an empty checklist when stored JSON is malformed', () => {
   const harness = createHarness({ 'agentiai-checklist': '{bad json' });
 
