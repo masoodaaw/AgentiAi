@@ -43,6 +43,7 @@ const focusContent = {
 
 const storageKey = 'agentiai-checklist';
 const buttons = document.querySelectorAll('.focus-button');
+const buttonList = Array.from(buttons);
 const focusTitle = document.getElementById('focus-title');
 const focusDescription = document.getElementById('focus-description');
 const focusList = document.getElementById('focus-list');
@@ -111,7 +112,7 @@ buttons.forEach((button) => {
   });
 
   button.addEventListener('keydown', (event) => {
-    const currentIndex = Array.from(buttons).indexOf(button);
+    const currentIndex = buttonList.indexOf(button);
 
     if (
       event.key !== 'ArrowRight' &&
@@ -131,14 +132,14 @@ buttons.forEach((button) => {
     if (event.key === 'Home') {
       nextIndex = 0;
     } else if (event.key === 'End') {
-      nextIndex = buttons.length - 1;
+      nextIndex = buttonList.length - 1;
     } else {
       const offset =
         event.key === 'ArrowRight' || event.key === 'ArrowDown' ? 1 : -1;
-      nextIndex = (currentIndex + offset + buttons.length) % buttons.length;
+      nextIndex = (currentIndex + offset + buttonList.length) % buttonList.length;
     }
 
-    const nextButton = buttons[nextIndex];
+    const nextButton = buttonList[nextIndex];
 
     renderFocus(nextButton.dataset.focus);
     nextButton.focus();

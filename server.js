@@ -66,22 +66,27 @@ function createServer() {
   });
 }
 
-function startServer() {
+function startServer(options = {}) {
+  const { exitOnError = false, logger = console } = options;
   const server = createServer();
 
   server.on('error', (error) => {
-    console.error(`agentiai failed to start on port ${port}: ${error.message}`);
+    logger.error(`agentiai failed to start on port ${port}: ${error.message}`);
+
+    if (exitOnError) {
+      process.exit(1);
+    }
   });
 
   server.listen(port, () => {
-    console.log(`agentiai is available at http://localhost:${port}`);
+    logger.log(`agentiai is available at http://localhost:${port}`);
   });
 
   return server;
 }
 
 if (require.main === module) {
-  startServer();
+  startServer({ exitOnError: true });
 }
 
 module.exports = {
